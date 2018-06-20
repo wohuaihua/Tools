@@ -1,0 +1,10 @@
+**/target/*
+**/.settings/*
+javadocs/*
+.classpath
+.project
+**/.metadata/*
+logs/
+workspace/
+
+
