@@ -477,7 +477,7 @@
          <artifactId>zkclient</artifactId>
          <version>0.1</version>
        </dependency>
-		
+       
 	</dependencies>
 	
 	<profiles>
@@ -523,7 +523,7 @@
 	</profiles>
 
 	<build>
-		<finalName>abUwRules</finalName>
+		<finalName>PowerRules</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
