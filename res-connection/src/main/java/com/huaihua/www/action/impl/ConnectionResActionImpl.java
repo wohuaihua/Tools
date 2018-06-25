@@ -11,6 +11,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.huaihua.www.action.ConnectResAction;
 
@@ -21,6 +22,15 @@ public class ConnectionResActionImpl implements ConnectResAction{
      * JSON Mapper
      */
     protected ObjectMapper jsonMapper = new ObjectMapper();
+    
+    @Value("#{res.resUri}")
+    private String resUri;
+    
+    @Value("#{res.jsonRequestObjName}")
+    private String jsonRequestObjName;
+    
+    @Value("#{res.jsonReturnObjName}")
+    private String resReturnObjName;
 	
 	@Override
 	public String executeRule(String ruleName, String reqestObj) {
@@ -30,17 +40,11 @@ public class ConnectionResActionImpl implements ConnectResAction{
 		
 		InputStream input =null;
 		PrintWriter printWriter =null;
+		String jsonRequest = "{\""+jsonRequestObjName+"\":" + reqestObj
+				+ " ,\"__DecisionID__\": \"string\"}";
 		
 		try {
-			String jsonRequest = "{\"PolicyBom\":" + reqestObj
-					+ " ,\"__DecisionID__\": \"string\"}";
-			
-			/**
-			 * TODO
-			 */
-			String urlPath="http://127.0.0.1:8080" + "/DecisionService/rest/v1"
-					+ "/JX_UWPOWERAPP/JX_UWPOWER";
-			URL url = new URL(urlPath);
+			URL url = new URL(resUri);
 			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 			httpConn.setRequestProperty("Content-Type", "application/json");
 			httpConn.setConnectTimeout(10000);
@@ -50,20 +54,17 @@ public class ConnectionResActionImpl implements ConnectResAction{
 			httpConn.setDoInput(true);
 			httpConn.setAllowUserInteraction(false);
 			httpConn.connect();
-
 			printWriter = new PrintWriter(new OutputStreamWriter(
 					httpConn.getOutputStream(), "utf-8"));
 			printWriter.write(jsonRequest.toString());
 			printWriter.flush();
 			input = httpConn.getInputStream();
-			int responseCode = httpConn.getResponseCode();
+			//int responseCode = httpConn.getResponseCode();
 			printWriter.close();
-			
 			JsonNode mapRoot = jsonMapper.readTree(input);
-			JsonNode resultNode = mapRoot.findValue("Result");
+			JsonNode resultNode = mapRoot.findValue(resReturnObjName);
 			System.out.println(resultNode.toString());
 			return resultNode.toString();
-			
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

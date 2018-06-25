@@ -17,7 +17,7 @@ import cn.com.huaihua.www.Person;
 
 public class Consumer {
 	
-	 protected static ObjectMapper jsonMapper = new ObjectMapper();
+	protected static ObjectMapper jsonMapper = new ObjectMapper();
 	
 	public static void main(String[] args) throws Exception {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new

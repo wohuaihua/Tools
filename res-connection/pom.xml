@@ -524,6 +524,7 @@
 
 	<build>
 		<finalName>PowerRules</finalName>
+		
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -538,6 +539,7 @@
 				<directory>src/main/resources/${profiles.active}</directory>
 			</resource>
 		</resources>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
