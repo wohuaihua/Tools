@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.UUID;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonNode;
@@ -40,8 +41,9 @@ public class ConnectionResActionImpl implements ConnectResAction{
 		
 		InputStream input =null;
 		PrintWriter printWriter =null;
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
 		String jsonRequest = "{\""+jsonRequestObjName+"\":" + reqestObj
-				+ " ,\"__DecisionID__\": \"string\"}";
+				+ " ,\"__DecisionID__\": \""+uuid+"\"}";
 		
 		try {
 			URL url = new URL(resUri);
