@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+ 	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+ 	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+	http://code.alibabatech.com/schema/dubbo 
+	http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    
+    <!-- 提供方应用信息，用于计算依赖关系 -->
+	<dubbo:application name="res-connection" />
+	<!-- 使用multicast广播注册中心暴露服务地址 -->
+	<!-- zookeeper://171.33.194.154:2181  测试环境-->
+	<dubbo:registry address="zookeeper://127.0.0.1:2181" />
+	 <!-- 去除接口延迟暴露时间（delay），去除重试机制（retries）,设置超时（tiemout）,设置线程池模式（threadpool），设置线程池数（threads）-->
+	<dubbo:provider delay="-1" retries="0" timeout="120000" threadpool="fixed" threads="500"/>
+	<!-- 用dubbo协议在20880端口暴露服务 -->
+	<dubbo:protocol name="dubbo" port="20880" />
+	<!-- 声明需要暴露的服务接口 -->
+	<dubbo:service interface="com.huaihua.www.action.ConnectResAction" ref="resConnection" />
+	<!-- 和本地bean一样实现服务 -->
+	<bean id="resConnection" class="com.huaihua.www.action.impl.ConnectionResActionImpl" />
+</beans>

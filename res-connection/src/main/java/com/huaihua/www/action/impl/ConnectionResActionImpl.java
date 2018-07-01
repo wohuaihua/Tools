@@ -1,22 +1,19 @@
 package com.huaihua.www.action.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Map;
+import java.util.UUID;
 
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
+import org.springframework.beans.factory.annotation.Value;
 
-import com.alibaba.dubbo.common.json.JSON;
-import com.alibaba.dubbo.common.json.JSONObject;
 import com.huaihua.www.action.ConnectResAction;
 
 
@@ -26,20 +23,30 @@ public class ConnectionResActionImpl implements ConnectResAction{
      * JSON Mapper
      */
     protected ObjectMapper jsonMapper = new ObjectMapper();
+    
+    @Value("#{res.resUri}")
+    private String resUri;
+    
+    @Value("#{res.jsonRequestObjName}")
+    private String jsonRequestObjName;
+    
+    @Value("#{res.jsonReturnObjName}")
+    private String resReturnObjName;
 	
 	@Override
-	public String executeRule(String ruleName, Object reqestObj) {
+	public String executeRule(String ruleName, String reqestObj) {
 		if(reqestObj==null) {
 			return "reqestObj is null !";
 		}
+		
+		InputStream input =null;
+		PrintWriter printWriter =null;
+		String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+		String jsonRequest = "{\""+jsonRequestObjName+"\":" + reqestObj
+				+ " ,\"__DecisionID__\": \""+uuid+"\"}";
+		
 		try {
-			String jsonRequest=JSON.json(reqestObj);
-			/**
-			 * TODO
-			 */
-			String urlPath="http://127.0.0.1:8080" + "/DecisionService/rest/v1"
-					+ "/personApp/1.0/personRule";
-			URL url = new URL(urlPath);
+			URL url = new URL(resUri);
 			HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 			httpConn.setRequestProperty("Content-Type", "application/json");
 			httpConn.setConnectTimeout(10000);
@@ -49,56 +56,37 @@ public class ConnectionResActionImpl implements ConnectResAction{
 			httpConn.setDoInput(true);
 			httpConn.setAllowUserInteraction(false);
 			httpConn.connect();
-
-			PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(
+			printWriter = new PrintWriter(new OutputStreamWriter(
 					httpConn.getOutputStream(), "utf-8"));
 			printWriter.write(jsonRequest.toString());
 			printWriter.flush();
-			InputStream input = httpConn.getInputStream();
-			int responseCode = httpConn.getResponseCode();
-			String tResult = genResult(input, responseCode);
+			input = httpConn.getInputStream();
+			//int responseCode = httpConn.getResponseCode();
 			printWriter.close();
+			JsonNode mapRoot = jsonMapper.readTree(input);
+			JsonNode resultNode = mapRoot.findValue(resReturnObjName);
+			System.out.println(resultNode.toString());
+			return resultNode.toString();
 		} catch (JsonGenerationException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
-		return null;
-	}
-	
-	private static String genResult(InputStream inputStream, int responseCode) {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new InputStreamReader(inputStream,
-					"UTF-8"));
-			StringBuilder sb = new StringBuilder();
-			String line = "";
-			while ((line = reader.readLine()) != null) {
-				sb.append(line);
-			}
-
-			return sb.toString();
-		} catch (Exception e) {
-			throw new RuntimeException("通过HTTP读取数据出错", e);
 		} finally {
-			if (inputStream != null) {
+			if(input!=null) {
 				try {
-					inputStream.close();
+					input.close();
 				} catch (IOException e) {
-					System.out.println("IO流关闭失败:" + e);
+					e.printStackTrace();
 				}
 			}
-
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					System.out.println("IO流关闭失败:" + e);
-				}
+			
+			if(printWriter!=null) {
+				printWriter.close();
 			}
 		}
+		return "";
 	}
 
 }

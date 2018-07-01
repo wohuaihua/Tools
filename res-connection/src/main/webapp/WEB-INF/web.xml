@@ -40,6 +40,7 @@
         <param-name>contextConfigLocation</param-name>
         <param-value>
             classpath:dubbo-context.xml
+            classpath:ApplicationContext.xml
         </param-value>
     </context-param>
 </web-app>

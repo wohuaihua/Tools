@@ -33,8 +33,6 @@
 			<version>1.9.13</version>
 		</dependency>
 
-
-
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -477,7 +475,7 @@
          <artifactId>zkclient</artifactId>
          <version>0.1</version>
        </dependency>
-		
+       
 	</dependencies>
 	
 	<profiles>
@@ -523,7 +521,8 @@
 	</profiles>
 
 	<build>
-		<finalName>abUwRules</finalName>
+		<finalName>PowerRules</finalName>
+		
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -538,6 +537,7 @@
 				<directory>src/main/resources/${profiles.active}</directory>
 			</resource>
 		</resources>
+		
 		<plugins>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>

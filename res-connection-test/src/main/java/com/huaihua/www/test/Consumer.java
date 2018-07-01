@@ -4,13 +4,21 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.huaihua.www.action.ConnectResAction;
+import com.meyacom.bom.BaseBom;
+import com.meyacom.bom.PolicyBom;
+import com.meyacom.bom.util.JsonUtil;
+import com.meyacom.result.Result;
 
 import cn.com.huaihua.www.Person;
 
 public class Consumer {
+	
+	protected static ObjectMapper jsonMapper = new ObjectMapper();
+	
 	public static void main(String[] args) throws Exception {
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new
 		String[] {"consumer.xml"});
@@ -19,9 +27,18 @@ public class Consumer {
 		
 		//JSONObject json=(JSONObject)JSONObject.parse(Consumer.readFileByLines("D:\\WorkProject\\anxin_car_policy\\jianxin_dubbo_intf_00\\powerTest\\src\\main\\java\\1.txt"));
 		//Person policy=json.toJavaObject(Person.class);
-		Person person=new Person();
-		String returnStr = demoService.executeRule("", person);
+		//Person person=new Person();
+		
+		PolicyBom bom=new PolicyBom();
+		BaseBom base=new BaseBom();
+		base.setCAppNo("12345678");
+		bom.setBaseBom(base);
+		JsonUtil.BomToJson(bom);
+		
+		String returnStr = demoService.executeRule("", JsonUtil.BomToJson(bom));
 		System.out.println( returnStr ); 
+		Result result=JsonUtil.JsonToResult(returnStr);
+		System.out.println(result);
 	}
 	
 	
