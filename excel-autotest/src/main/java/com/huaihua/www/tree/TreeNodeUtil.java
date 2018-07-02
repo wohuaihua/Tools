@@ -1,5 +1,7 @@
 package com.huaihua.www.tree;
 
+import com.huaihua.www.util.StringUtil;
+
 public class TreeNodeUtil {
 
 	
@@ -51,19 +53,18 @@ public class TreeNodeUtil {
 	 * @param data
 	 * @return
 	 */
-	static Boolean FindInTreeNodeUsingRecursion(TreeNode root,String data) {
-		Boolean temp;
+	static Boolean findInTreeNodeUsingRecursion(TreeNode root,String data) {
 		if(root==null||"".equals(data)) {
 			return false;
 		}else {
 			if(data.equals(root.getData())) {
 				return true;
 			}else {
-				temp=FindInTreeNodeUsingRecursion(root.getFirstChild(),data);
-				if(temp!=true) {
+				boolean temp=findInTreeNodeUsingRecursion(root.getFirstChild(),data);
+				if(temp==true) {
 					return temp;
 				}else {
-					return (FindInTreeNodeUsingRecursion(root.getNextSibiling(),data));
+					return (findInTreeNodeUsingRecursion(root.getNextSibiling(),data));
 				}
 			}
 			
@@ -71,20 +72,88 @@ public class TreeNodeUtil {
 		
 	}
 	
-	public int getNodeHeight(TreeNode root) {
-		if(root==null) {
-			return 0;
-		}
-		int height=0;
-		TreeNode fristChild=root.getFirstChild();
-		if(fristChild==null) {
-			return 0;
-		}
+	/**
+	 * 在二叉树中搜索某个节点
+	 * 这个节点必须完全路径相同
+	 * @param root
+	 * @param data
+	 * @return
+	 */
+	static TreeNode getTreeNodeUsingRecursion(TreeNode root,String data) {
 		TreeNode temp=null;
+		if(root==null||"".equals(data)||data==null) {
+			return null;
+		}else {
+			//包含父类路径如：additional.second.sex
+			if(data.contains(".")) {
+				String[] arr=data.split("\\.");
+				data=arr[arr.length-1];
+				//看有没有相应的父节点
+				//arr=StringUtil.remove(arr, arr[arr.length-1]);
+				for(int i=0;i<arr.length;i++) {
+					arr=StringUtil.remove(arr, arr[arr.length-1-i]);
+					String s=StringUtil.changePath(arr, "\\.");
+					TreeNode node=getTreeNodeUsingRecursion(root,s);
+					if(node==null) {
+						return null;
+					}
+				}
+			}
+			
+			if(data.equals(root.getData())) {
+				return root;
+			}else {
+				temp=getTreeNodeUsingRecursion(root.getFirstChild(),data);
+				if(temp!=null) {
+					return temp;
+				}else {
+					return (getTreeNodeUsingRecursion(root.getNextSibiling(),data));
+				}
+			}
+			
+		}
 		
-		/**
-		 * TODO 
-		 */
-		return 0;
 	}
+	
+	/**
+	 * 是否存在父节点如：additional.second.sex
+	 * 存在additional.second
+	 * 且存在additional
+	 * 
+	 * @param root
+	 * @param data
+	 * @return
+	 */
+	static boolean isExistFatherNode(TreeNode root,String data) {
+		if(root==null||"".equals(data)||data==null) {
+			return false;
+		}else {
+			//包含父类路径如：additional.second.sex
+			if(data.contains(".")) {
+				String[] arr=data.split("\\.");
+				//看有没有相应的初始节点
+				for(int i=0;i<arr.length;i++) {
+					String orgin=StringUtil.changePath(StringUtil.remove(arr, arr[arr.length-1-i]),".");
+					boolean isExist=isExistFatherNode(root,orgin);
+					if(!isExist) {
+						return false;
+					}
+				}
+			}
+			
+			if(data.equals(root.getData())) {
+				return true;
+			}else {
+				boolean isExist=isExistFatherNode(root.getFirstChild(),data);
+				if(!isExist) {
+					return isExist;
+				}else {
+					return (isExistFatherNode(root.getNextSibiling(),data));
+				}
+			}
+			
+		}
+		
+	}
+	
 }

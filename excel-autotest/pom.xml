@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.huaihua.www</groupId>
-	<artifactId>anxin-policy-excel-autotest</artifactId>
+	<artifactId>excel-autotest</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>anxin-policy-excel-autotest</name>

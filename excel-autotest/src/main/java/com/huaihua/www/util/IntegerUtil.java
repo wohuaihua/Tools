@@ -1,6 +1,5 @@
 package com.huaihua.www.util;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +27,12 @@ public class IntegerUtil {
 		return arr;
 	}
 	
+	/**
+	 * 移除某个指定元素
+	 * @param arr
+	 * @param i
+	 * @return
+	 */
 	public static int[] remove(int[] arr,int i) {
 		if(arr==null) {
 			return null;
@@ -46,10 +51,23 @@ public class IntegerUtil {
 		return newArr;
 	}
 	
+	public static boolean contian(int[] arr,int i) {
+		if(arr==null) {
+			return false;
+		}
+		for(int t =0;t < arr.length ;t++) {
+			if(arr[t]==i) {
+				return true;
+			}
+		}
+		return false;
+		
+	}
+	
 	public static void main(String[] args) {
 		int score[] = {75, 69, 75, 88};
 		//score=dubboSort(score);
-		score=remove(score,75);
-		System.out.println(score);
+		//score=remove(score,75);
+		System.out.println(contian(score,76));
 	}
 }
