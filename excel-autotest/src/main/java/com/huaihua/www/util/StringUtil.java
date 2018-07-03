@@ -40,16 +40,31 @@ public class StringUtil {
 		return newArr;
 	}
 	
+	/**
+	 * 获取一个字符串数组的前几位：additional.second.sex
+	 * 3:additional.second.sex,
+	 * 2:additional.second,
+	 * 1:additional
+	 * 
+	 * @param arr	字符串数组
+	 * @param i		获取前几位的数字
+	 * @return
+	 */
 	public static String[] before(String[] arr,int i) {
-		String[] newArr=new String[i];
+		String[] newArr=new String[i+1];
 		for(int t=0;t<newArr.length;t++) {
-			if(t<i) {
+			if(t<=i) {
 				newArr[t]=arr[t];
 			}
 		}
 		return newArr;
 	}
 	
+	/**
+	 * 辅助方法，用于输出字符串数组
+	 * @param  arr		字符串数组
+	 * @return String	字符串数组通过','拼接成的字符串 	
+	 */
 	public static String sayArr(String[] arr) {
 		String str="";
 		for(int t =0;t < arr.length ;t++) {
@@ -58,6 +73,12 @@ public class StringUtil {
 		return str;
 	}
 	
+	/**
+	 * 将字符串数组变成一个字符串，每个元素之间通过regix相连
+	 * @param arr	字符串
+	 * @param regix 相连符
+	 * @return
+	 */
 	public static String changePath(String[] arr,String regix) {
 		String str="";
 		for(int t =0;t < arr.length ;t++) {
@@ -70,8 +91,9 @@ public class StringUtil {
 		return str;
 	}
 	
+	
 	public static void main(String[] args) {
 		String str="additional.second.sex";
-		System.out.println(StringUtil.sayArr(StringUtil.before(str.split("\\."), 2)));
+		System.out.println(StringUtil.changePath(StringUtil.before(str.split("\\."), 1),"."));
 	}
 }

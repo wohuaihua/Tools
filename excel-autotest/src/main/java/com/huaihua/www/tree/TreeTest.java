@@ -2,6 +2,8 @@ package com.huaihua.www.tree;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -63,61 +65,72 @@ public class TreeTest {
 
 		// 冒泡排序
 		arr = IntegerUtil.dubboSort(arr);
-		int min = arr[0];
+		//最大值
+		int max=arr[arr.length-1];
+		Map<String,String[]> map=new HashMap<String,String[]>();
 		for (Entry<String, Integer> entry : keySet) {
-			if (!root.hasChild()) {
-				TreeNode node = new TreeNode();
-				TreeNode temp = node;
-				String[] keys = entry.getKey().split("\\.");
-				node.setData(keys[0]);
-				root.setFirstChild(node);
-				keys = StringUtil.remove(keys, keys[0]);
-				for (String key : keys) {
-					TreeNode child = new TreeNode();
-					child.setData(key);
-					temp.setFirstChild(child);
-					temp = child;
-				}
-			} else {
-				String[] keys = entry.getKey().split("\\.");
-				for (int i = 0; i < keys.length; i++) {
-					System.out.println(StringUtil.sayArr(keys));
-					TreeNode child = new TreeNode();
-					child.setData(keys[i]);
-					//有这个节点时
-					if(TreeNodeUtil.getTreeNodeUsingRecursion(root, entry.getKey())!=null) {
-						continue;
-					}
-					//没有这个节点，并且没有父节点
-					if(i==0&&TreeNodeUtil.getTreeNodeUsingRecursion(root, entry.getKey())==null&&
-							TreeNodeUtil.isExistFatherNode(root, entry.getKey())) {
-						System.out.println("123");
-						/*
-						TreeNode temp = root.getFirstChild();
-						while(temp.hasNextSibiling()) {
-							temp=temp.getNextSibiling();
-						}
-						temp.setNextSibiling(child);
-						continue;
-						*/
-						
-					}
-					//没有这个节点，但是有父节点
-					TreeNode treeNode=TreeNodeUtil.getTreeNodeUsingRecursion(root, 
-							StringUtil.changePath(StringUtil.before(keys, i), "."));
-					if(!treeNode.hasChild()) {
-						treeNode.setFirstChild(child);
-					}else {
-						TreeNode temp = treeNode.getFirstChild();
-						while(temp.hasNextSibiling()) {
-							temp=temp.getNextSibiling();
-						}
-						temp.setNextSibiling(child);
+			String[] array=entry.getKey().split("\\.");
+			map.put(entry.getKey(), array);
+		}
+		
+		Set<Entry<String, String[]>> set=map.entrySet();
+		for(int i=0;i<max;i++) {
+			Map<String,String[]> elemMap=new HashMap<String,String[]>();
+			for(Entry<String, String[]> enrty:set) {
+				if(enrty.getValue().length-1>=i) {
+					if(!elemMap.keySet().contains(enrty.getValue()[i])) {
+						elemMap.put(enrty.getValue()[i], StringUtil.before(enrty.getValue(), i));
 					}
 				}
 			}
+			
+			Set<Entry<String, String[]>> elemSet=elemMap.entrySet();
+			List<TreeNode> nodeList=new ArrayList<TreeNode>();
+			Map<TreeNode,List<String>> nodeTree=new HashMap<TreeNode,List<String>>();
+			for(Entry<String, String[]> entry:elemSet) {
+				//表明是第一层元素
+				if(entry.getValue().length==1) {
+					String key=entry.getKey();
+					TreeNode node=new TreeNode();
+					node.setData(key);
+					nodeList.add(node);
+					continue;
+				}else {
+					//获取父路径
+					String str=StringUtil.changePath(StringUtil.remove(entry.getValue(), 
+							entry.getValue()[entry.getValue().length-1]), ".");
+					
+					//获取父节点
+					TreeNode node=TreeNodeUtil.getTreeNodeUsingRecursion(root, str);
+					if(nodeTree.get(node)==null) {
+						List<String> elems=new ArrayList<String>();
+						elems.add(entry.getKey());
+						nodeTree.put(node, elems);
+					}else {
+						nodeTree.get(node).add(entry.getKey());
+					}
+				}
+			}
+			if(!root.hasChild()) {
+				TreeNode first=TreeNodeUtil.setNextSibilingList(nodeList);
+				root.setFirstChild(first);
+			}else {
+				Set<Map.Entry<TreeNode,List<String>>>  nodeTreeSet= nodeTree.entrySet();
+				for(Map.Entry<TreeNode,List<String>> entry:nodeTreeSet) {
+					List<String> nodes=entry.getValue();
+					List<TreeNode> treenodes=new ArrayList<TreeNode>();
+					for(String s:nodes) {
+						TreeNode node=new TreeNode();
+						node.setData(s);
+						treenodes.add(node);
+					}
+					TreeNode first=TreeNodeUtil.setNextSibilingList(treenodes);
+					entry.getKey().setFirstChild(first);
+				}
+			}
+			
+			System.out.println();
 		}
-		
 		System.out.println("=======================");
 		TreeNodeUtil.inOrder(root);
 		/*
