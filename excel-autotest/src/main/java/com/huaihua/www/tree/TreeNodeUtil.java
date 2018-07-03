@@ -86,30 +86,36 @@ public class TreeNodeUtil {
 		if (root == null || "".equals(data) || data == null) {
 			return null;
 		} else {
+			TreeNode orginNode=null;
 			// 包含父类路径如：additional.second.sex
 			if (data.contains(".")) {
 				String[] arr = data.split("\\.");
 				data = arr[arr.length - 1];
 				// 看有没有相应的父节点
 				// arr=StringUtil.remove(arr, arr[arr.length-1]);
+				arr = StringUtil.remove(arr, arr[arr.length-1]);
 				for (int i = 0; i < arr.length; i++) {
-					arr = StringUtil.remove(arr, arr[arr.length - 1 - i]);
-					String s = StringUtil.changePath(arr, "\\.");
+					String[] array = StringUtil.before(arr, i);
+					String s = StringUtil.changePath(array, ".");
 					TreeNode node = getTreeNodeUsingRecursion(root, s);
+					orginNode=node;
 					if (node == null) {
 						return null;
 					}
 				}
+			}else {
+				orginNode=root;
 			}
 
-			if (data.equals(root.getData())) {
+			if (data.equals(orginNode.getData())) {
 				return root;
 			} else {
-				temp = getTreeNodeUsingRecursion(root.getFirstChild(), data);
+				temp = getTreeNodeUsingRecursion(orginNode.getFirstChild(), data);
 				if (temp != null) {
 					return temp;
 				} else {
-					return (getTreeNodeUsingRecursion(root.getNextSibiling(), data));
+					temp = getTreeNodeUsingRecursion(orginNode.getNextSibiling(), data);
+					return temp;
 				}
 			}
 

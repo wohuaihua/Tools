@@ -132,11 +132,41 @@ public class TreeTest {
 			System.out.println();
 		}
 		System.out.println("=======================");
-		TreeNodeUtil.inOrder(root);
-		/*
-		 * System.out.println(TreeNodeUtil.findInTreeNodeUsingRecursion(root,"name1"));
-		 * TreeNode treeNode=TreeNodeUtil.getTreeNodeUsingRecursion(root,"name");
-		 * System.out.println(treeNode.getData());
-		 */
+		TreeNodeUtil.preOrder(root);
+		
+		String s1 = "name:\"\"";
+		String s2 = "age:num";
+		String s3 = "time:time/yyyy-mm-dd hh:mm:ss";
+		String s4 = "isgood:boolean";
+		String s5 = "book.name:{}\"\"";
+		String s6 = "familyNames:[]\"\"";
+		String s7 = "childs.sex:[]{}";
+		String s8 = "additional.girl2:map\"\"";
+		String s9 = "additional.first:mapnum";
+		String s10 = "additional.second.sex:map{}\"\"";
+		
+		Map<String,String> keyValue=new HashMap<String,String>();
+		keyValue.put(s1, "hah");
+		keyValue.put(s2, "18");
+		keyValue.put(s3, "2018-07-03 15:00:00");
+		keyValue.put(s4, "true");
+		keyValue.put(s5, "时间简史");
+		keyValue.put(s6, "familyNames01,familyNames02");
+		keyValue.put(s7, "男,女");
+		keyValue.put(s8, "刘朱");
+		keyValue.put(s9, "11");
+		keyValue.put(s10, "男");
+		
+		Set<Entry<String, String>> keyValueSet=keyValue.entrySet();
+		for(Entry<String, String> entry:keyValueSet) {
+			String path=entry.getKey().split(":")[0];
+			//获取对应的节点
+			TreeNode node=TreeNodeUtil.getTreeNodeUsingRecursion(root, path);
+			node.setValue(entry.getValue());
+		}
+		
+		//生成json
+		
+		System.out.println("=======================");
 	}
 }

@@ -6,7 +6,7 @@ public enum JsonElement {
 	TIME("time"),
 	OBJECT("{}"),
 	BOOLEAN("boolean"),
-	MAP("{}map"),
+	MAP("map"),
 	ARRAY("[]"),
 	NULL("null");
 	
