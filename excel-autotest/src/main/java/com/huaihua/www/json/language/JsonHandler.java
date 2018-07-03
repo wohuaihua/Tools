@@ -1,8 +1,15 @@
-package com.huaihua.www.json.language;import java.lang.annotation.Retention;
+package com.huaihua.www.json.language;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import com.huaihua.www.enums.JsonElement;
+import com.huaihua.www.tree.TreeNode;
 import com.huaihua.www.util.JsonObjUtil;
 import com.huaihua.www.util.StringUtil;
 
@@ -97,11 +104,33 @@ public class JsonHandler {
 		return JsonHandler.numToJson(key, value);
 	}
 	
-	public static String ObjectToJson(String key,String value) {
-		int objHeight=JsonObjUtil.getHeightObj(key.split(":")[0]);
-		StringBuffer sb=new StringBuffer();
-		sb.append(StringUtil.addHeadEnd(key.split(":")[0]));
-		sb.append(":");
+	public static String toJsonStr(Map<String,TreeNode> jsonMap) {
+		
+		if(jsonMap==null) {
+			return "";
+		}
+		List<String> container=new ArrayList<String>();
+		Set<Entry<String, TreeNode>> jsonSet=jsonMap.entrySet();
+		for(Entry<String, TreeNode> elem:jsonSet) {
+			String exp=elem.getKey().replaceFirst(elem.getKey().split(":")[0]+":", "");
+			while(exp.length()!=0) {
+				System.out.println(exp);
+				JsonElement jsonElement= StringUtil.findJsonElement(exp);
+				if(jsonElement==JsonElement.OBJECT||jsonElement==JsonElement.ARRAY) {
+					exp=exp.replaceFirst("\\"+jsonElement.getType(), "");
+					continue;
+				}
+				if(jsonElement==JsonElement.TIME) {
+					exp=exp.replaceFirst(jsonElement.getType(), "");
+					exp="";
+					continue;
+				}
+				if(jsonElement==JsonElement.STRING) {
+					System.out.println();
+				}
+				exp=exp.replaceFirst(jsonElement.getType(), "");
+			}
+		}
 		return "";
 	}
 }

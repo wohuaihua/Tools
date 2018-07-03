@@ -24,4 +24,7 @@ public enum JsonElement {
 		this.type = type;
 	}
 	
+	public static void main(String[] args) {
+		System.out.println(JsonElement.NULL.getType());
+	}
 }

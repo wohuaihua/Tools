@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.huaihua.www.json.language.JsonHandler;
 import com.huaihua.www.util.IntegerUtil;
 import com.huaihua.www.util.StringUtil;
 
@@ -129,10 +130,8 @@ public class TreeTest {
 				}
 			}
 			
-			System.out.println();
 		}
-		System.out.println("=======================");
-		TreeNodeUtil.preOrder(root);
+		//TreeNodeUtil.preOrder(root);
 		
 		String s1 = "name:\"\"";
 		String s2 = "age:num";
@@ -158,14 +157,19 @@ public class TreeTest {
 		keyValue.put(s10, "男");
 		
 		Set<Entry<String, String>> keyValueSet=keyValue.entrySet();
+		//用于解析json的map
+		Map<String,TreeNode> jsonMap=new HashMap<String, TreeNode>();
 		for(Entry<String, String> entry:keyValueSet) {
 			String path=entry.getKey().split(":")[0];
 			//获取对应的节点
 			TreeNode node=TreeNodeUtil.getTreeNodeUsingRecursion(root, path);
 			node.setValue(entry.getValue());
+			jsonMap.put(entry.getKey(), node);
 		}
 		
-		//生成json
+		//生成json,单位是根节点下属性为整个的json部分
+		
+		JsonHandler.toJsonStr(jsonMap);
 		
 		System.out.println("=======================");
 	}

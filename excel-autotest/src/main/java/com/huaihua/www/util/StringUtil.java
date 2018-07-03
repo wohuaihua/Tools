@@ -3,6 +3,8 @@ package com.huaihua.www.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.huaihua.www.enums.JsonElement;
+
 public class StringUtil {
 
 	public static String addHeadEnd(String str) {
@@ -21,6 +23,7 @@ public class StringUtil {
 		String[] strs=str.split("\\.");
 		return strs.length;
 	}
+	
 	
 	public static String[] remove(String[] arr,String i) {
 		if(arr==null) {
@@ -95,5 +98,35 @@ public class StringUtil {
 	public static void main(String[] args) {
 		String str="additional.second.sex";
 		System.out.println(StringUtil.changePath(StringUtil.before(str.split("\\."), 1),"."));
+	}
+	
+	/**
+	 * 查找字符串先匹配的什么，如果匹配到枚举，则将字符串匹配的字符串删除
+	 * @param str
+	 * @return
+	 */
+	public static JsonElement findJsonElement(String str) {
+		if(str.startsWith(JsonElement.ARRAY.getType())) {
+			return JsonElement.ARRAY;
+		}
+		if(str.startsWith(JsonElement.BOOLEAN.getType())) {
+			return JsonElement.BOOLEAN;
+		}
+		if(str.startsWith(JsonElement.MAP.getType())) {
+			return JsonElement.MAP;
+		}
+		if(str.startsWith(JsonElement.NUMBER.getType())) {
+			return JsonElement.NUMBER;
+		}
+		if(str.startsWith(JsonElement.OBJECT.getType())) {
+			return JsonElement.OBJECT;
+		}
+		if(str.startsWith(JsonElement.STRING.getType())) {
+			return JsonElement.STRING;
+		}
+		if(str.startsWith(JsonElement.TIME.getType())) {
+			return JsonElement.TIME;
+		}
+		return JsonElement.NULL;
 	}
 }
