@@ -10,8 +10,8 @@ import java.util.Set;
 
 import com.huaihua.www.enums.JsonElement;
 import com.huaihua.www.tree.TreeNode;
-import com.huaihua.www.util.JsonObjUtil;
 import com.huaihua.www.util.StringUtil;
+import com.huaihua.www.util.EnumsUtil;
 
 public class JsonHandler {
 	
@@ -114,8 +114,8 @@ public class JsonHandler {
 		for(Entry<String, TreeNode> elem:jsonSet) {
 			String exp=elem.getKey().replaceFirst(elem.getKey().split(":")[0]+":", "");
 			while(exp.length()!=0) {
-				System.out.println(exp);
-				JsonElement jsonElement= StringUtil.findJsonElement(exp);
+				//System.out.println(exp);
+				JsonElement jsonElement= EnumsUtil.findJsonElement(exp);
 				if(jsonElement==JsonElement.OBJECT||jsonElement==JsonElement.ARRAY) {
 					exp=exp.replaceFirst("\\"+jsonElement.getType(), "");
 					continue;
@@ -133,4 +133,5 @@ public class JsonHandler {
 		}
 		return "";
 	}
+	
 }

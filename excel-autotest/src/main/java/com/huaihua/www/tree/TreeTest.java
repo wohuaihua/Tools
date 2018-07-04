@@ -9,9 +9,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.huaihua.www.enums.JsonElement;
 import com.huaihua.www.json.language.JsonHandler;
 import com.huaihua.www.util.IntegerUtil;
 import com.huaihua.www.util.StringUtil;
+import com.huaihua.www.util.EnumsUtil;		
 
 public class TreeTest {
 
@@ -115,6 +117,8 @@ public class TreeTest {
 			if(!root.hasChild()) {
 				TreeNode first=TreeNodeUtil.setNextSibilingList(nodeList);
 				root.setFirstChild(first);
+				//这里可以读取配置文件
+				root.setType("{}");
 			}else {
 				Set<Map.Entry<TreeNode,List<String>>>  nodeTreeSet= nodeTree.entrySet();
 				for(Map.Entry<TreeNode,List<String>> entry:nodeTreeSet) {
@@ -139,10 +143,10 @@ public class TreeTest {
 		String s4 = "isgood:boolean";
 		String s5 = "book.name:{}\"\"";
 		String s6 = "familyNames:[]\"\"";
-		String s7 = "childs.sex:[]{}";
+		String s7 = "childs.sex:[]{}\"\"";
 		String s8 = "additional.girl2:map\"\"";
 		String s9 = "additional.first:mapnum";
-		String s10 = "additional.second.sex:map{}\"\"";
+		String s10 ="additional.second.sex:map{}\"\"";
 		
 		Map<String,String> keyValue=new HashMap<String,String>();
 		keyValue.put(s1, "hah");
@@ -165,11 +169,29 @@ public class TreeTest {
 			TreeNode node=TreeNodeUtil.getTreeNodeUsingRecursion(root, path);
 			node.setValue(entry.getValue());
 			jsonMap.put(entry.getKey(), node);
+			
+			String type=entry.getKey().replaceFirst(path+":", "");
+			if(path.contains(".")) {
+				String[] paths = path.split("\\.");
+				//通过枚举匹配类型
+				for (int i = 0; i < paths.length; i++) {
+					String[] array = StringUtil.before(paths, i);
+					String s = StringUtil.changePath(array, ".");
+					TreeNode beforeNode = TreeNodeUtil.getTreeNodeUsingRecursion(root, s);
+					JsonElement jsonElement= EnumsUtil.findJsonElement(type);
+					String returnType=EnumsUtil.returnSuitType(jsonElement, type);
+					beforeNode.setType(returnType);
+					type=EnumsUtil.reomveHead(type, jsonElement);
+				}
+				continue;
+			}
+			node.setType(type);
 		}
 		
 		//生成json,单位是根节点下属性为整个的json部分
 		
-		JsonHandler.toJsonStr(jsonMap);
+		//JsonHandler.toJsonStr(jsonMap);
+		TreeNodeUtil.preOrder(root);
 		
 		System.out.println("=======================");
 	}
