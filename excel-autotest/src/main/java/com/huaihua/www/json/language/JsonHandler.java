@@ -104,34 +104,5 @@ public class JsonHandler {
 		return JsonHandler.numToJson(key, value);
 	}
 	
-	public static String toJsonStr(Map<String,TreeNode> jsonMap) {
-		
-		if(jsonMap==null) {
-			return "";
-		}
-		List<String> container=new ArrayList<String>();
-		Set<Entry<String, TreeNode>> jsonSet=jsonMap.entrySet();
-		for(Entry<String, TreeNode> elem:jsonSet) {
-			String exp=elem.getKey().replaceFirst(elem.getKey().split(":")[0]+":", "");
-			while(exp.length()!=0) {
-				//System.out.println(exp);
-				JsonElement jsonElement= EnumsUtil.findJsonElement(exp);
-				if(jsonElement==JsonElement.OBJECT||jsonElement==JsonElement.ARRAY) {
-					exp=exp.replaceFirst("\\"+jsonElement.getType(), "");
-					continue;
-				}
-				if(jsonElement==JsonElement.TIME) {
-					exp=exp.replaceFirst(jsonElement.getType(), "");
-					exp="";
-					continue;
-				}
-				if(jsonElement==JsonElement.STRING) {
-					System.out.println();
-				}
-				exp=exp.replaceFirst(jsonElement.getType(), "");
-			}
-		}
-		return "";
-	}
 	
 }

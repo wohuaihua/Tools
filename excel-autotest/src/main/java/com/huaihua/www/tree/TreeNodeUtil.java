@@ -1,8 +1,10 @@
 package com.huaihua.www.tree;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.huaihua.www.util.StringUtil;
 
@@ -12,7 +14,7 @@ public class TreeNodeUtil {
 	// 1.方位根节点
 	// 2.按前序遍历方式遍历左子树
 	// 3.按前序遍历方式遍历右子树
-	static void preOrder(TreeNode root) {
+	public static void preOrder(TreeNode root) {
 		if (root != null) {
 			System.out.println(root.getData());
 			preOrder(root.getFirstChild());
@@ -123,43 +125,6 @@ public class TreeNodeUtil {
 
 	}
 
-	/**
-	 * 是否存在父节点如：additional.second.sex 存在additional.second 且存在additional
-	 * 
-	 * @param root
-	 * @param data
-	 * @return
-	 */
-	static boolean isExistFatherNode(TreeNode root, String data) {
-		if (root == null || "".equals(data) || data == null) {
-			return false;
-		} else {
-			// 包含父类路径如：additional.second.sex
-			if (data.contains(".")) {
-				String[] arr = data.split("\\.");
-				// 看有没有相应的初始节点
-				for (int i = 0; i < arr.length; i++) {
-					String orgin = StringUtil.changePath(StringUtil.remove(arr, arr[arr.length - 1 - i]), ".");
-					boolean isExist = isExistFatherNode(root, orgin);
-					if (!isExist) {
-						return false;
-					}
-				}
-			}
-
-			if (data.equals(root.getData())) {
-				return true;
-			} else {
-				boolean isExist = isExistFatherNode(root.getFirstChild(), data);
-				if (!isExist) {
-					return isExist;
-				} else {
-					return (isExistFatherNode(root.getNextSibiling(), data));
-				}
-			}
-
-		}
-	}
 
 	static TreeNode getSmallestChild(TreeNode node) {
 		TreeNode temp = node;
@@ -177,33 +142,9 @@ public class TreeNodeUtil {
 		return temp;
 	}
 	
-	/**
-	 * 相对于根节点
-	 * @param root
-	 * @param keys
-	 * @return
+	/*
+	 * 将集合中的树节点都设置成兄弟节点
 	 */
-	static Map<String,TreeNode> getOrginNode(TreeNode root, String[] keys) {
-		TreeNode orginNode = null;
-		String path = "";
-		for (int t = 0; t < keys.length; t++) {
-			String[] array = StringUtil.remove(keys, keys[keys.length - 1 - t]);
-			String s = StringUtil.changePath(array, "\\.");
-			TreeNode node = TreeNodeUtil.getTreeNodeUsingRecursion(root, s);
-			if (node != null) {
-				orginNode = node;
-				path = s;
-			}
-		}
-		Map<String,TreeNode> map=new HashMap<>();
-		if(orginNode!=null) {
-			map.put(path, orginNode);
-		}else {
-			map.put(path, root);
-		}
-		return map;
-	}
-	
 	static TreeNode setNextSibilingList(List<TreeNode> nodes) {
 		TreeNode first=nodes.get(0);
 		for(TreeNode node:nodes) {
@@ -218,4 +159,50 @@ public class TreeNodeUtil {
 		}
 		return first;
 	}
+	
+	/**
+	 * 获取树的最大高度
+	 * @param root
+	 * @return
+	 */
+	public static int getTreeMaxHeight(TreeNode root) {
+		/**
+		 * TODO
+		 */
+		return 0;
+	}
+	
+	/**
+	 * 获取根节点到特定节点的路径
+	 * @param root
+	 * @param node
+	 * @return
+	 */
+	public static String TreePath(TreeNode root,TreeNode node,String path) {
+		if(root != null) {
+			if(!root.hasNextSibiling()) {
+				path=path+"."+root.getData();
+			}
+			path=TreePath(root.getFirstChild(),node,path);
+			path=TreePath(root.getNextSibiling(),node,path);
+		}
+		return path;
+	}
+	
+	/**
+	 * 前序遍历方式获取所有树节点
+	 * @param root
+	 * @param nodes
+	 * @return
+	 */
+	public static List<TreeNode> AllNode(TreeNode root,List<TreeNode> nodes){
+		if (root != null) {
+			nodes.add(root);
+			System.out.println(root.getData());
+			nodes=AllNode(root.getFirstChild(),nodes);
+			nodes=AllNode(root.getNextSibiling(),nodes);
+		}
+		return nodes;
+	}
+	
 }

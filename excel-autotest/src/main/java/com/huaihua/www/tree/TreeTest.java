@@ -190,8 +190,10 @@ public class TreeTest {
 		
 		//生成json,单位是根节点下属性为整个的json部分
 		
-		//JsonHandler.toJsonStr(jsonMap);
 		TreeNodeUtil.preOrder(root);
+		List<TreeNode> n=new ArrayList<TreeNode>();
+		n=TreeNodeUtil.AllNode(root, n);
+		System.out.println(TreeNodeUtil.TreePath(n.get(0), n.get(9),""));
 		
 		System.out.println("=======================");
 	}
