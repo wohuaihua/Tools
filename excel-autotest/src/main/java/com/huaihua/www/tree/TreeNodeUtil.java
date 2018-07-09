@@ -142,7 +142,7 @@ public class TreeNodeUtil {
 		return temp;
 	}
 	
-	/*
+	/**
 	 * 将集合中的树节点都设置成兄弟节点
 	 */
 	static TreeNode setNextSibilingList(List<TreeNode> nodes) {
@@ -161,33 +161,53 @@ public class TreeNodeUtil {
 	}
 	
 	/**
-	 * 获取树的最大高度
-	 * @param root
-	 * @return
+	 * 获取树的最大深度
+	 * @param root 根节点
+	 * @return	   
 	 */
 	public static int getTreeMaxHeight(TreeNode root) {
-		/**
-		 * TODO
-		 */
-		return 0;
+		if(root==null||root.getFirstChild()==null) {
+			return 0;
+		}
+		List<TreeNode> nodes=new ArrayList<TreeNode>();
+		nodes=AllNode(root,nodes);
+		TreeNode temp=root;
+		List<TreeNode> tempSaves=new ArrayList<TreeNode>();
+		List<TreeNode> tempUses=new ArrayList<TreeNode>();
+		tempUses.add(temp);
+		int height=0;
+		for(int i=0;i<nodes.size();i++) {
+			for(TreeNode node:tempUses) {
+				if(!node.hasNextSibiling()) {
+					tempSaves.add(node);
+				}else {
+					tempSaves.add(node);
+					while(node.hasNextSibiling()) {
+						node=node.getNextSibiling();
+						tempSaves.add(node);
+					}
+				}
+			}
+			for(TreeNode node:tempSaves) {
+				if(node.hasChild()) {
+					++height;
+					break;
+				}
+			}
+			tempUses.clear();
+			for(TreeNode node:tempSaves) {
+				if(node.hasChild()) {
+					tempUses.add(node.getFirstChild());
+				}
+			}
+			tempSaves.clear();
+			if(tempUses.size()==0) {
+				break;
+			}
+		}
+		return height+1;
 	}
 	
-	/**
-	 * 获取根节点到特定节点的路径
-	 * @param root
-	 * @param node
-	 * @return
-	 */
-	public static String TreePath(TreeNode root,TreeNode node,String path) {
-		if(root != null) {
-			if(!root.hasNextSibiling()) {
-				path=path+"."+root.getData();
-			}
-			path=TreePath(root.getFirstChild(),node,path);
-			path=TreePath(root.getNextSibiling(),node,path);
-		}
-		return path;
-	}
 	
 	/**
 	 * 前序遍历方式获取所有树节点
@@ -198,9 +218,176 @@ public class TreeNodeUtil {
 	public static List<TreeNode> AllNode(TreeNode root,List<TreeNode> nodes){
 		if (root != null) {
 			nodes.add(root);
-			System.out.println(root.getData());
+			//System.out.println(root.getData());
 			nodes=AllNode(root.getFirstChild(),nodes);
 			nodes=AllNode(root.getNextSibiling(),nodes);
+		}
+		return nodes;
+	}
+	
+	/**
+	 * 获取特定深度下的所有节点
+	 * @param root
+	 * @param i
+	 * @return
+	 */
+	public static List<TreeNode> heightLevelNodes(TreeNode root,int level){
+		if(root==null) {
+			return null;
+		}
+		List<TreeNode> returnNodes=new ArrayList<TreeNode>();
+		if(level==0) {
+			returnNodes.add(root);
+			return returnNodes;
+		}
+		List<TreeNode> nodes=new ArrayList<TreeNode>();
+		nodes=AllNode(root,nodes);
+		TreeNode temp=root;
+		List<TreeNode> tempSaves=new ArrayList<TreeNode>();
+		List<TreeNode> tempUses=new ArrayList<TreeNode>();
+		tempUses.add(temp);
+		for(int i=0;i<nodes.size();i++) {
+			for(TreeNode node:tempUses) {
+				if(!node.hasNextSibiling()) {
+					tempSaves.add(node);
+				}else {
+					tempSaves.add(node);
+					while(node.hasNextSibiling()) {
+						node=node.getNextSibiling();
+						tempSaves.add(node);
+					}
+				}
+			}
+			if(i==level-1) {
+				return tempSaves;
+			}
+			tempUses.clear();
+			for(TreeNode node:tempSaves) {
+				if(node.hasChild()) {
+					tempUses.add(node.getFirstChild());
+				}
+			}
+			tempSaves.clear();
+			if(tempUses.size()==0) {
+				break;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 返回一个节点的父节点
+	 * @param node 需要查找父节点的节点
+	 * @param root 根节点
+	 * @return
+	 */
+	public static TreeNode returnNodeFather(TreeNode root,TreeNode node) {
+		if(root==null||node==null) {
+			return null;
+		}
+		int height=getTreeMaxHeight(root);
+		for(int i=1;i<height+1;i++) {
+			TreeNode brother= returnBother(root,node);
+			List<TreeNode> nodes=heightLevelNodes(root,i);
+			if(nodes.contains(node)) {
+				nodes=heightLevelNodes(root,i-1);
+				for(TreeNode n:nodes) {
+					if(n.getFirstChild()==brother) {
+						return n;
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取最外层的兄弟节点
+	 * @param root 根节点
+	 * @param node 想要查询的节点
+	 */
+	public static TreeNode returnBother(TreeNode root,TreeNode node) {
+		if(root==null||node==null) {
+			return null;
+		}
+		int height=getTreeMaxHeight(root);
+		List<TreeNode> nodes=new ArrayList<TreeNode>();
+		for(int i=1;i<height+1;i++) {
+			nodes=heightLevelNodes(root,i);
+			if(nodes.contains(node)) {
+				break;
+			}
+		}
+		TreeNode temp;
+		temp=node;
+		//移除不可能的节点
+		while(temp.hasNextSibiling()) {
+			temp=temp.getNextSibiling();
+			nodes.remove(temp);
+		}
+		
+		for(TreeNode innerNode:nodes) {
+			TreeNode t=innerNode;
+			TreeNode record=innerNode;
+			if(node==t) {
+				return record;
+			}
+			while(t.hasNextSibiling()) {
+				t=t.getNextSibiling();
+				if(node==t) {
+					return record;
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	/**
+	 * 获取除根节点下的最外层节点
+	 * @param root
+	 * @param node
+	 * @return
+	 */
+	public static TreeNode getOldFather(TreeNode root,TreeNode node) {
+
+		if(root==null||node==null) {
+			return null;
+		}
+		int height=getTreeMaxHeight(root);
+		TreeNode temp;
+		temp=node;
+		for(int i=1;i<height+1;i++) {
+			//获取最外层节点
+			TreeNode borther=returnBother(root, temp);
+			TreeNode father=returnNodeFather(root, borther);
+			if(root==father) {
+				return temp;
+			}
+			temp=father;
+		}
+		return null;
+		
+	}
+	
+	/**
+	 * 获取指定节点的直接子节点集
+	 * @param node   指定节点
+	 * @return
+	 */
+	public static List<TreeNode> firstChilds(TreeNode node){
+		if(node==null||node.getFirstChild()==null) {
+			return null;
+		}
+		TreeNode temp;
+		List<TreeNode> nodes=new ArrayList<TreeNode>();
+		temp=node.getFirstChild();
+		while(temp.hasNextSibiling()) {
+			nodes.add(temp);
+			temp=temp.getNextSibiling();
+		}
+		if(!nodes.contains(temp)) {
+			nodes.add(temp);
 		}
 		return nodes;
 	}

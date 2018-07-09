@@ -40,10 +40,7 @@ public class Test {
 		person.setAddtional(map);
 		person.setIsgood(true);
 		person.setBook(new Book("huaihua"));
-		//System.out.println(JSON.toJSONString(person));
+		System.out.println(JSON.toJSONString(person));
 		
-		String str="{}[]";
-		str=str.replaceFirst("\\"+JsonElement.OBJECT.getType(), "");
-		System.out.println(str);
 	}
 }

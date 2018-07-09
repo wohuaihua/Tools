@@ -7,11 +7,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.swing.plaf.TreeUI;
+
 import java.util.Set;
 
 import com.huaihua.www.enums.JsonElement;
 import com.huaihua.www.json.language.JsonHandler;
 import com.huaihua.www.util.IntegerUtil;
+import com.huaihua.www.util.JsonObjUtil;
 import com.huaihua.www.util.StringUtil;
 import com.huaihua.www.util.EnumsUtil;		
 
@@ -28,8 +32,11 @@ public class TreeTest {
 		String str07 = "childs.sex:[]{}";
 		String str08 = "additional.girl2:map\"\"";
 		String str09 = "additional.first:mapnum";
-		String str11 = "additional.second.sex:mapnum{}\"\"";
-
+		String str11 = "additional.second.sex:map{}\"\"";
+		String str13 = "additional.second.one:map{}\"\"";
+		String str12 = "additional.third.thirdsex:map{}\"\"";
+		String str14 = "additional.third.four:map{}\"\"";
+		
 		List<String> strs = new ArrayList<String>();
 		strs.add(str01);
 		strs.add(str02);
@@ -41,6 +48,9 @@ public class TreeTest {
 		strs.add(str08);
 		strs.add(str09);
 		strs.add(str11);
+		strs.add(str12);
+		strs.add(str13);
+		strs.add(str14);
 
 		List<String> keyTree = new ArrayList<String>();
 		for (String s : strs) {
@@ -147,6 +157,9 @@ public class TreeTest {
 		String s8 = "additional.girl2:map\"\"";
 		String s9 = "additional.first:mapnum";
 		String s10 ="additional.second.sex:map{}\"\"";
+		String s12 ="additional.second.one:map{}\"\"";
+		String s11 ="additional.third.thirdsex:map{}\"\"";
+		String s13 ="additional.third.four:map{}\"\"";
 		
 		Map<String,String> keyValue=new HashMap<String,String>();
 		keyValue.put(s1, "hah");
@@ -159,6 +172,9 @@ public class TreeTest {
 		keyValue.put(s8, "刘朱");
 		keyValue.put(s9, "11");
 		keyValue.put(s10, "男");
+		keyValue.put(s11, "女");
+		keyValue.put(s12, "one");
+		keyValue.put(s13, "four");
 		
 		Set<Entry<String, String>> keyValueSet=keyValue.entrySet();
 		//用于解析json的map
@@ -190,11 +206,16 @@ public class TreeTest {
 		
 		//生成json,单位是根节点下属性为整个的json部分
 		
-		TreeNodeUtil.preOrder(root);
-		List<TreeNode> n=new ArrayList<TreeNode>();
-		n=TreeNodeUtil.AllNode(root, n);
-		System.out.println(TreeNodeUtil.TreePath(n.get(0), n.get(9),""));
+		//TreeNodeUtil.preOrder(root);
+		List<TreeNode> levelNodes=TreeNodeUtil.heightLevelNodes(root, 2);
+		JsonObjUtil.treeToJson(levelNodes.get(3));
+//		TreeNode father=TreeNodeUtil.returnNodeFather(root, levelNodes.get(0));
+//		TreeNode botehr=TreeNodeUtil.returnBother(root, levelNodes.get(0));
+//		TreeNode node01=TreeNodeUtil.getOldFather(root, levelNodes.get(0));
 		
+		
+		//System.out.println(JsonObjUtil.toJsonElem(levelNodes.get(0)));
+		//JsonObjUtil.treeToJson(root);
 		System.out.println("=======================");
 	}
 }
