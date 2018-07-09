@@ -11,8 +11,18 @@ public class EnumsUtil {
 	 * @return
 	 */
 	public static String reomveHead(String exp,JsonElement jsonElement) {
-		if(jsonElement==JsonElement.OBJECT||jsonElement==JsonElement.ARRAY) {
+		if(jsonElement==JsonElement.OBJECT) {
 			exp=exp.replaceFirst("\\"+jsonElement.getType(), "");
+			return exp;
+		}
+		if(jsonElement==JsonElement.ARRAY) {
+			exp=exp.replaceFirst("\\"+jsonElement.getType(), "");
+			String str=EnumsUtil.findJsonElement(exp).getType();
+			if(str.startsWith("{}")) {
+				exp=exp.replaceFirst("\\"+str, "");
+			}else {
+				exp=exp.replaceFirst(str, "");
+			}
 			return exp;
 		}
 		if(jsonElement==JsonElement.TIME) {

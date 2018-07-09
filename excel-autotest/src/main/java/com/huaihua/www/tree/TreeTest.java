@@ -29,7 +29,7 @@ public class TreeTest {
 		String str04 = "isgood:boolean";
 		String str05 = "book.name:{}\"\"";
 		String str06 = "familyNames:[]\"\"";
-		String str07 = "childs.sex:[]{}";
+		String str07 = "childs.sex:[]{}\"\"";
 		String str08 = "additional.girl2:map\"\"";
 		String str09 = "additional.first:mapnum";
 		String str11 = "additional.second.sex:map{}\"\"";
@@ -208,7 +208,7 @@ public class TreeTest {
 		
 		//TreeNodeUtil.preOrder(root);
 		List<TreeNode> levelNodes=TreeNodeUtil.heightLevelNodes(root, 2);
-		JsonObjUtil.treeToJson(levelNodes.get(3));
+		JsonObjUtil.treeToJson(levelNodes.get(0));
 //		TreeNode father=TreeNodeUtil.returnNodeFather(root, levelNodes.get(0));
 //		TreeNode botehr=TreeNodeUtil.returnBother(root, levelNodes.get(0));
 //		TreeNode node01=TreeNodeUtil.getOldFather(root, levelNodes.get(0));

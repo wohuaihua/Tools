@@ -5,8 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +12,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Set;
-import java.util.Stack;
 import java.util.UUID;
 
 import com.huaihua.www.enums.JsonElement;
@@ -40,50 +37,6 @@ public class JsonObjUtil {
 	 * @param root
 	 * @return
 	 */
-	/**
-	 * @param root
-	 * @return
-	 */
-//	public static String treeToJson(TreeNode root) {
-//		int firstNodeHeight = TreeNodeUtil.getTreeMaxHeight(root);
-//		if(root==null) {
-//			return "";
-//		}
-//		List<String> jsonExp=new ArrayList<String>();
-//		Stack<Map<String,TreeNode>> stack=new Stack<Map<String,TreeNode>>();
-//		for (int i = 1; i < firstNodeHeight ; i++) {
-//			String str="";
-//			root.setNextSibiling(null);
-//			List<TreeNode> nodes=TreeNodeUtil.heightLevelNodes(root, i);
-//			boolean isRecord=false;
-//			for(TreeNode node:nodes) {
-//				if(node.getType().equals(JsonElement.MAP.getType())||
-//						node.getType().equals(JsonElement.OBJECT.getType())) {
-//					String uuid=UUID.randomUUID().toString().replaceAll("-", "");
-//					str+= StringUtil.addHeadEnd(node.getData()) + ":" + "{"+uuid+"}"+",";
-//					Map<String,TreeNode> map=new HashMap<String,TreeNode>();
-//					map.put(uuid, node);
-//					stack.add(map);
-//					if(node==nodes.get(nodes.size()-1)) {
-//						str=str.substring(0, str.length()-1);
-//					}
-//					isRecord=true;
-//					continue;
-//				}
-//				//TODO 
-//				str+=toJsonElem(node)+",";
-//			}
-//			if(str.endsWith(",")) {
-//				str=str.substring(0, str.length()-1);
-//			}
-//			if(isRecord) {
-//				jsonExp.add(str);
-//			}
-//		}
-//		return "";
-//	}
-	
-	
 	public static String treeToJson(TreeNode root) {
 		if(root==null) {
 			return "";
@@ -101,15 +54,10 @@ public class JsonObjUtil {
 				if(node.getType().equals(JsonElement.MAP.getType())||
 						node.getType().equals(JsonElement.OBJECT.getType())) {
 					String uuid=UUID.randomUUID().toString().replaceAll("-", "");
-					String str= StringUtil.addHeadEnd(node.getData()) + ":" + "{"+uuid+"}"+",";
-					//System.out.println(i+"&&"+str);
 					firstNodes=TreeNodeUtil.firstChilds(node);
-//					mapNodes.put(i+"&&"+uuid, firstNodes);
 					mapNodes.put(uuid, firstNodes);
 					continue;
 				}
-				String str=toJsonElem(node)+",";
-				//System.out.println(i+"&&"+str);
 			}
 		}
 		
@@ -128,8 +76,13 @@ public class JsonObjUtil {
 				}
 				String value="";
 				if(node.getType().equals(JsonElement.MAP.getType())||
-						node.getType().equals(JsonElement.OBJECT.getType())) {
-					value= StringUtil.addHeadEnd(node.getData()) + ":" + "{"+key+"}"+",";
+						node.getType().equals(JsonElement.OBJECT.getType())||
+						node.getType().startsWith("[]{}")) {
+					if(!node.getType().startsWith("[]{}")) {
+						value= StringUtil.addHeadEnd(node.getData()) + ":" + "{"+key+"}"+",";
+					}else {
+						value= StringUtil.addHeadEnd(node.getData()) + ":" + "["+key+"]"+",";
+					}
 				}else {
 					value=toJsonElem(node)+",";
 				}
@@ -148,12 +101,8 @@ public class JsonObjUtil {
 		
 		Set<Entry<String, List<String>>> expSet=expMap.entrySet();
 		Map<String,String> summary=new HashMap<String,String>();
-		String temp="";
 		for(Entry<String, List<String>> exp:expSet) {
 			String key=exp.getKey();
-//			if("".equals(key)) {
-//				continue;
-//			}
 			String value="";
 			for(String str:exp.getValue()) {
 				value+=str;
@@ -162,37 +111,26 @@ public class JsonObjUtil {
 				value=value.substring(0, value.length()-1);
 			}
 			summary.put(key, value);
-//			for(Entry<String, List<String>> otherExp:expSet) {
-//				if(exp==otherExp) {
-//					continue;
-//				}
-//				List<String> exps=otherExp.getValue();
-//				for(String expStr:exps) {
-//					if(expStr.contains(key)) {
-//						expStr=expStr.replace(key, value);
-//						System.out.println(expStr);
-//					}
-//				}
-//			}
 		}
 		
-		Set<Entry<String, String>> summarySet=summary.entrySet();
+		//获取节点json表达式
 		String rootJson=summary.get("");
-		List<String> keys=new ArrayList<String>();
-		for(Entry<String, String> s:summarySet) {
-			if("".equals(s.getKey())) {
-				continue;
-			}
-			Pattern p=Pattern.compile("\\{([^\\}]+)\\}");
-			Matcher m=p.matcher(s.getValue());
-			while(m.find()){
-				keys.add(m.group(1));
-			}
-			for(String key:keys) {
-				//s.getValue()=s.getValue().replace(key, summary.get(key));
-			}
+		String jsonBody=rootJson;
+		for(int i=0;i<summary.size();i++) {
+			List<String> ids=new ArrayList<String>();
+			//匹配UUID的正则表达式
+		 	Pattern p=Pattern.compile("(?<=\\{)[0-9a-f]{32}(?=\\})");
+		    Matcher m=p.matcher(jsonBody);
+		    while(m.find()){
+		    	ids.add(m.group());
+		    }
+		    for(String id:ids) {
+		    	jsonBody=jsonBody.replace(id, summary.get(id));
+		    	System.out.println(jsonBody);
+		    }
 		}
-		return "";
+		System.out.println(jsonBody);
+		return jsonBody;
 	}
 
 	public static String toJsonElem(TreeNode node) {
@@ -205,8 +143,41 @@ public class JsonObjUtil {
 		if (type.equals(JsonElement.STRING.getType())) {
 			return StringUtil.addHeadEnd(key) + ":" + StringUtil.addHeadEnd(value);
 		}
-		if (type.equals(JsonElement.ARRAY.getType())) {
+		//这个是处理一般数组
+		if (type.startsWith(JsonElement.ARRAY.getType())) {
+			String str=EnumsUtil.reomveHead(type, JsonElement.ARRAY);
+			if (str.equals(JsonElement.STRING.getType())) {
+				String[] strs=value.split(",");
+				String returnStr="";
+				for(String s:strs) {
+					returnStr+=StringUtil.addHeadEnd(s)+",";
+				}
+				if(returnStr.endsWith(",")) {
+					returnStr=returnStr.substring(0, returnStr.length()-1);
+				}
+				return StringUtil.addHeadEnd(key) + ":" + "["+returnStr+"]";
+			}
+			if (str.equals(JsonElement.BOOLEAN.getType())) {
+				return StringUtil.addHeadEnd(key) + ":[" + value+"]";
+			}
+			if (str.equals(JsonElement.NUMBER.getType())) {
+				return StringUtil.addHeadEnd(key) + ":[" + value+"]";
+			}
+			/**
+			 * TODO数组类型的时间转化
+			 */
+			if (str.startsWith(JsonElement.TIME.getType())) {
+				String[] strs = type.split("/");
+				SimpleDateFormat format = new SimpleDateFormat(strs[1]);
+				try {
+					Date date = format.parse(value);
+					return StringUtil.addHeadEnd(key) + ":" + date.getTime();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 
+			}
+			return "";
 		}
 		if (type.equals(JsonElement.BOOLEAN.getType())) {
 			return StringUtil.addHeadEnd(key) + ":" + value;
@@ -220,11 +191,11 @@ public class JsonObjUtil {
 		if (type.equals(JsonElement.OBJECT.getType())) {
 
 		}
-		if (type.equals(JsonElement.TIME.getType())) {
-			String[] strs = value.split("/");
+		if (type.startsWith(JsonElement.TIME.getType())) {
+			String[] strs = type.split("/");
 			SimpleDateFormat format = new SimpleDateFormat(strs[1]);
 			try {
-				Date date = format.parse(strs[0]);
+				Date date = format.parse(value);
 				return StringUtil.addHeadEnd(key) + ":" + date.getTime();
 			} catch (ParseException e) {
 				e.printStackTrace();
