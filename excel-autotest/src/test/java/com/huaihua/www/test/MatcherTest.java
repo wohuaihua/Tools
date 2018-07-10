@@ -21,8 +21,14 @@ public static void main(String[] args){
 		Pattern p=Pattern.compile(reg);
 		Matcher m=p.matcher(url); 
 		while(m.find()){
+	       // System.out.println(m.group());
+	    }
+		
+		String str="#$ignore.expected";
+		p=Pattern.compile("\\#\\$ignore.excepted");
+		m=p.matcher(str); 
+		while(m.find()){
 	        System.out.println(m.group());
 	    }
- 
 }
 }
