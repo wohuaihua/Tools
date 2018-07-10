@@ -95,9 +95,29 @@ public class StringUtil {
 	}
 	
 	
+	public static String addEscape(String str) {
+		if(str.contains("{")) {
+			int i=str.indexOf("{");
+			StringBuffer sb = new StringBuffer(); 
+			sb.append(str).insert(i,"\\");
+			str=sb.toString();
+		}
+		if(str.contains("}")) {
+			int i=str.indexOf("}");
+			StringBuffer sb = new StringBuffer(); 
+			sb.append(str).insert(i,"\\");
+			str=sb.toString();
+		}
+		return str;
+	}
+	
+	//测试
 	public static void main(String[] args) {
-		String str="additional.second.sex";
-		System.out.println(StringUtil.changePath(StringUtil.before(str.split("\\."), 1),"."));
+//		String str="additional.second.sex";
+//		System.out.println(StringUtil.changePath(StringUtil.before(str.split("\\."), 1),"."));
+		String s7 =  "childs.{1}.sex:[]{}\"\"";
+		String s=addEscape(s7);
+		System.out.println(s);
 	}
 	
 	/**

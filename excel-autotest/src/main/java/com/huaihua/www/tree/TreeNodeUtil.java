@@ -392,4 +392,23 @@ public class TreeNodeUtil {
 		return nodes;
 	}
 	
+	/**
+	 * 用于判断节点是否为[],且子节点为{}
+	 * @param node
+	 * @return
+	 */
+	public static boolean isArrayObject(TreeNode node) {
+		List<TreeNode> firsts=TreeNodeUtil.firstChilds(node);
+		boolean isArrayObject=false;
+		if("[]".equals(node.getType())) {
+			for(TreeNode firstNode:firsts) {
+				if("{}".equals(firstNode.getType())) {
+					isArrayObject=true;
+					break;
+				}
+			}
+		}
+		return isArrayObject;
+	}
+	
 }

@@ -17,12 +17,12 @@ public class EnumsUtil {
 		}
 		if(jsonElement==JsonElement.ARRAY) {
 			exp=exp.replaceFirst("\\"+jsonElement.getType(), "");
-			String str=EnumsUtil.findJsonElement(exp).getType();
+			/*String str=EnumsUtil.findJsonElement(exp).getType();
 			if(str.startsWith("{}")) {
 				exp=exp.replaceFirst("\\"+str, "");
 			}else {
 				exp=exp.replaceFirst(str, "");
-			}
+			}*/
 			return exp;
 		}
 		if(jsonElement==JsonElement.TIME) {
@@ -71,7 +71,10 @@ public class EnumsUtil {
 		if(JsonElement.ARRAY==element) {
 			str=EnumsUtil.reomveHead(str, element);
 			JsonElement jsonElement= EnumsUtil.findJsonElement(str);
-			return JsonElement.ARRAY.getType()+jsonElement.getType();
+			if(jsonElement!=JsonElement.OBJECT) {
+				return JsonElement.ARRAY.getType()+jsonElement.getType();
+			}
+			return JsonElement.ARRAY.getType();
 		}
 		return element.getType();
 	}

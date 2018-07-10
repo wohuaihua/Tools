@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+
 import java.util.Set;
 import java.util.UUID;
 
@@ -41,8 +43,12 @@ public class JsonObjUtil {
 		if(root==null) {
 			return "";
 		}
+		root.setNextSibiling(null);
 		int firstNodeHeight = TreeNodeUtil.getTreeMaxHeight(root);
+		boolean isContainArrayObject=TreeNodeUtil.isArrayObject(root);
+		//获取每层的Map,Object,ArrayObject节点,key是uuid，value是此层的节点集合
 		Map<String,List<TreeNode>> mapNodes=new LinkedHashMap<String,List<TreeNode>>();
+		//用于初始根节点
 		List<TreeNode> initNodes=new ArrayList<TreeNode>();
 		initNodes.add(root);
 		mapNodes.put("", initNodes);
@@ -52,7 +58,8 @@ public class JsonObjUtil {
 			List<TreeNode> nodes=TreeNodeUtil.heightLevelNodes(root, i);
 			for(TreeNode node:nodes) {
 				if(node.getType().equals(JsonElement.MAP.getType())||
-						node.getType().equals(JsonElement.OBJECT.getType())) {
+						node.getType().equals(JsonElement.OBJECT.getType())||
+						TreeNodeUtil.isArrayObject(node)) {
 					String uuid=UUID.randomUUID().toString().replaceAll("-", "");
 					firstNodes=TreeNodeUtil.firstChilds(node);
 					mapNodes.put(uuid, firstNodes);
@@ -61,12 +68,11 @@ public class JsonObjUtil {
 			}
 		}
 		
-		Set<Entry<String, List<TreeNode>>> nodeSet=mapNodes.entrySet();
 		Map<String,List<String>> expMap=new HashMap<String,List<String>>();
-		for(Entry<String, List<TreeNode>> entry:nodeSet) {
+		for(Entry<String, List<TreeNode>> entry:mapNodes.entrySet()) {
 			for(TreeNode node:entry.getValue()) {
 				String key="";
-				for(Entry<String, List<TreeNode>> e:nodeSet) {
+				for(Entry<String, List<TreeNode>> e:mapNodes.entrySet()) {
 					if(TreeNodeUtil.firstChilds(node)!=null&&
 							e.getValue().containsAll(TreeNodeUtil.firstChilds(node))&&
 							TreeNodeUtil.firstChilds(node).containsAll(e.getValue())) {
@@ -77,10 +83,17 @@ public class JsonObjUtil {
 				String value="";
 				if(node.getType().equals(JsonElement.MAP.getType())||
 						node.getType().equals(JsonElement.OBJECT.getType())||
-						node.getType().startsWith("[]{}")) {
-					if(!node.getType().startsWith("[]{}")) {
-						value= StringUtil.addHeadEnd(node.getData()) + ":" + "{"+key+"}"+",";
+						TreeNodeUtil.isArrayObject(node)) {
+					//不是ArrayObject类型
+					if(!TreeNodeUtil.isArrayObject(node)) {
+						int curretnHeght=TreeNodeUtil.getTreeMaxHeight(node);
+						if((firstNodeHeight==curretnHeght+1)&&isContainArrayObject) {
+							value= "{"+key+"}"+",";
+						}else {
+							value= StringUtil.addHeadEnd(node.getData()) + ":" + "{"+key+"}"+",";
+						}
 					}else {
+						//是ArrayObject类型
 						value= StringUtil.addHeadEnd(node.getData()) + ":" + "["+key+"]"+",";
 					}
 				}else {
@@ -118,18 +131,27 @@ public class JsonObjUtil {
 		String jsonBody=rootJson;
 		for(int i=0;i<summary.size();i++) {
 			List<String> ids=new ArrayList<String>();
+			String reg="(?<=\\{)[0-9a-f]{32}(?=\\})";
 			//匹配UUID的正则表达式
-		 	Pattern p=Pattern.compile("(?<=\\{)[0-9a-f]{32}(?=\\})");
+		 	Pattern p=Pattern.compile(reg);
 		    Matcher m=p.matcher(jsonBody);
-		    while(m.find()){
-		    	ids.add(m.group());
-		    }
+	    	while(m.find()){
+	    		ids.add(m.group());
+	    	}
+	    	if(ids.size()==0) {
+	    		reg="(?<=\\[)[0-9a-f]{32}(?=\\])";
+	    		p=Pattern.compile(reg);
+	    		m=p.matcher(jsonBody);
+	    		while(m.find()){
+	    			ids.add(m.group());
+	    		}
+	    	}
 		    for(String id:ids) {
 		    	jsonBody=jsonBody.replace(id, summary.get(id));
-		    	System.out.println(jsonBody);
+		    	//System.out.println(jsonBody);
 		    }
 		}
-		System.out.println(jsonBody);
+		//System.out.println(jsonBody);
 		return jsonBody;
 	}
 
