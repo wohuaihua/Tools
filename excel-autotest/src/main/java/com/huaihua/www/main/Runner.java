@@ -14,11 +14,9 @@ public class Runner {
 	
 	public static void main(String[] args) {
 		Runner runner=new Runner();
-		runner.run("Sheet1","3-4");
+		runner.run("anxin-bc-ruleapp","3-5");
+		System.out.println("完成");
 	}
-	
-	
-	
 	
 	
 	public void run(String sheetName,String nums) {
@@ -29,7 +27,7 @@ public class Runner {
 			List returnList=treeInit.initTree(reader.read(sheetName,nums));
 			DubboConnection connection=new DubboConnection();
 			Map<String,String> dubboResult=connection.connection(sheetName,(Map<String,Object>)returnList.get(0));
-			Map<String,String> exceptedMap=(Map<String,String>)returnList.get(0);
+			Map<String,String> exceptedMap=(Map<String,String>)returnList.get(1);
 			Map<String,String> excelResult=new HashMap<String,String>();
 			for(Entry<String, String> dResult:dubboResult.entrySet()) {
 				for(Entry<String, String> exceptedR:exceptedMap.entrySet()) {

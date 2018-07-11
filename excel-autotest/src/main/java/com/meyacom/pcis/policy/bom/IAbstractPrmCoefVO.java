@@ -1,5 +1,6 @@
 package com.meyacom.pcis.policy.bom;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @author MyEclipse Persistence Tools
  */
 
-public  class IAbstractPrmCoefVO {
+public  class IAbstractPrmCoefVO implements Serializable{
     // Fields
 
 	private String CAppNo;

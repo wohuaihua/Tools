@@ -1,5 +1,6 @@
 package com.meyacom.pcis.policy.bom;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  *
  * @author jiangqf
  */
-public class IAbstractPolicy{
+public class IAbstractPolicy implements Serializable{
 	private IAbstractBaseVO base;//保单基本信息
 	private IAbstractApplicantVO applicant;//投保人
 	private IAbstractInsuredVO insured;	//被保险人

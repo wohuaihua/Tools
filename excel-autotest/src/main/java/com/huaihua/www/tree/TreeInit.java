@@ -428,7 +428,7 @@ public class TreeInit {
 				json=json.substring(0, json.length()-1);
 			}
 			json="{"+json+"}";
-			System.out.println(json);
+			System.out.println(origin.getKey()+"请求 : "+json);
 			IAbstractPolicy policy=JSON.parseObject(json, new TypeReference<IAbstractPolicy>() {});
 			indexObjectMap.put(origin.getKey(), policy);
 		}

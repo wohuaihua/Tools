@@ -42,6 +42,7 @@ public class ExcelWriter {
 	         cellSecond.setCellStyle(style);
 	         lineNum++;
         }
+        
         try {
         	String str=PropertiesUtil.getProperty("savePath");
             FileOutputStream fout = new FileOutputStream(str);  

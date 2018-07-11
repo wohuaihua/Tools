@@ -1,5 +1,6 @@
 package com.meyacom.pcis.policy.bom;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -8,7 +9,7 @@ import java.util.Date;
  * @author pxg 2012-09-06
  */
 
-public class IAbstractFixSpecVO {
+public class IAbstractFixSpecVO implements Serializable{
 
 	private String CPkId; // C_PK_ID 主键
 	private String CAppNo; // C_APP_NO 申请单号

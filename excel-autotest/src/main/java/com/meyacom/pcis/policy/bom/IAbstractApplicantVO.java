@@ -1,5 +1,6 @@
 package com.meyacom.pcis.policy.bom;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Date;
  * @author jiangqf@isoftstone-ai.com
  */
 
-public class IAbstractApplicantVO {
+public class IAbstractApplicantVO implements Serializable{
 
     // Fields
 
