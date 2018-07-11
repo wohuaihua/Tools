@@ -81,6 +81,9 @@ public class ExcelReader {
 					continue;
 				}
 				String value=row.getCell(i).getStringCellValue().trim();
+				if(value==null||"".equals(value)) {
+					continue;
+				}
 				Row title=sheet.getRow(1);
 				String key=title.getCell(i).getStringCellValue().trim();
 				keyValueMap.put(key, value);

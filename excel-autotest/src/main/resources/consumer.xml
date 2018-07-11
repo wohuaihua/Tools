@@ -10,7 +10,7 @@
 	<!-- 在zookeeper注册中心的应用名称 -->
 	<dubbo:application name="ccbpi-ruleapp-web"/>
 	<!-- 使用zookeeper注册中心暴露服务地址 -->
-	<dubbo:registry address="zookeeper://10.0.0.88:2281" check="false"/>
+	<dubbo:registry address="zookeeper://10.0.0.16:2281" check="false"/>
 	<!-- 要引用的服务 -->
 	<dubbo:reference interface="com.meyacom.ruleapp.ext.service.RuleService" id="uWService" protocol="dubbo" group="underwrite" timeout="1200000"/>
 </beans>

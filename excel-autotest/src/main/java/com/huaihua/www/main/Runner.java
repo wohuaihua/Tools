@@ -14,7 +14,7 @@ public class Runner {
 	
 	public static void main(String[] args) {
 		Runner runner=new Runner();
-		runner.run("anxin-bc-ruleapp","3-5");
+		runner.run("anxin-bc-ruleapp","3-6");
 		System.out.println("完成");
 	}
 	
