@@ -15,7 +15,7 @@ import com.huaihua.www.util.PropertiesUtil;
 
 public class ExcelWriter {
 	
-	public void writeExcel(String sheetName,Map<String,String> map) {
+	public void writeExcel(String sheetName,Map<Integer,String> map) {
         //第一步创建workbook  
         HSSFWorkbook wb = new HSSFWorkbook();  
         //第二步创建sheet  
@@ -32,7 +32,7 @@ public class ExcelWriter {
         cellSecond.setCellStyle(style);
           
         int lineNum=1;
-        for(Entry<String, String> entry:map.entrySet()) {
+        for(Entry<Integer, String> entry:map.entrySet()) {
         	 HSSFRow lineRow = sheet.createRow(lineNum);
     		 HSSFCell cellf = lineRow.createCell(0);
     		 HSSFCell cells = lineRow.createCell(1);

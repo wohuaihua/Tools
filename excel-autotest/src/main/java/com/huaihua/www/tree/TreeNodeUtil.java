@@ -16,7 +16,7 @@ public class TreeNodeUtil {
 	// 3.按前序遍历方式遍历右子树
 	public static void preOrder(TreeNode root) {
 		if (root != null) {
-			System.out.println(root.getData());
+			System.out.println(root.getData()+":"+root.getType());
 			preOrder(root.getFirstChild());
 			preOrder(root.getNextSibiling());
 		}

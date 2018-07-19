@@ -12,6 +12,7 @@ import java.util.Set;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.huaihua.www.Person;
+import com.huaihua.www.Test;
 import com.huaihua.www.enums.JsonElement;
 import com.huaihua.www.util.IntegerUtil;
 import com.huaihua.www.util.JsonObjUtil;
@@ -420,6 +421,7 @@ public class TreeInit {
 			
 			
 			List<TreeNode> levelNodes=TreeNodeUtil.heightLevelNodes(root, 2);
+			//TreeNodeUtil.preOrder(root);
 			String json="";
 			for(TreeNode node:levelNodes) {
 				json+=JsonObjUtil.treeToJson(node)+",";

@@ -4,15 +4,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+
+import com.huaihua.www.util.PropertiesUtil;
 
 public class ExcelReader {
 	
@@ -80,6 +84,7 @@ public class ExcelReader {
 				if(row.getCell(i)==null) {
 					continue;
 				}
+				row.getCell(i).setCellType(CellType.STRING);
 				String value=row.getCell(i).getStringCellValue().trim();
 				if(value==null||"".equals(value)) {
 					continue;
@@ -95,8 +100,7 @@ public class ExcelReader {
 	
 	private File getFile() throws IOException  {
 		Properties properties = new Properties();
-	    InputStream in = ExcelReader.class.getClassLoader().getResourceAsStream("config.properties");
-	    properties.load(in);
+	    properties.load(new InputStreamReader(PropertiesUtil.class.getClassLoader().getResourceAsStream("config.properties"), "UTF-8"));
 	    String path=properties.getProperty("excelPath");
 		File excelFile = new File(path);
 		return excelFile;
