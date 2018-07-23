@@ -14,7 +14,7 @@ public class Runner {
 	
 	public static void main(String[] args) {
 		Runner runner=new Runner();
-		runner.run("anxin-uwdr-18-ruleapp","3-116");
+		runner.run("anxin-uwdr-18-ruleapp","118");
 		System.out.println("完成");
 	}
 	
@@ -35,9 +35,11 @@ public class Runner {
 						continue;
 					}
 					if(!dResult.getValue().contains(exceptedR.getValue())) {
+						System.out.println(exceptedR.getKey()+"    "+"failure");
 						excelResult.put(Integer.valueOf(exceptedR.getKey()), dResult.getValue());
 						continue;
 					}
+					System.out.println(exceptedR.getKey()+"    "+"success");
 					excelResult.put(Integer.valueOf(exceptedR.getKey()), "success");
 				}
 			}
