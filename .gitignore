@@ -9,3 +9,5 @@ workspace/
 
 
 maven-delete-tools.zip
+excel-autotest/src/main/java/com/huaihua/www/main/Runner.java
+excel-autotest/src/main/resources/consumer.xml
