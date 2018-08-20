@@ -14,7 +14,7 @@ public class ListNodeUtil {
 	 * @param headNode
 	 * @return
 	 */
-	static int listLinkedListLength(ListNode headNode) {
+	public static int listLinkedListLength(ListNode headNode) {
 		int length=0;
 		ListNode currentNode=headNode;
 		while(currentNode!=null) {
@@ -33,9 +33,13 @@ public class ListNodeUtil {
 	 * @param position
 	 * @return
 	 */
-	static ListNode insertInLinkedList(ListNode headNode,ListNode nodeToInsert,int position) {
+	public static ListNode insertInLinkedList(ListNode headNode,ListNode nodeToInsert,int position) {
 		if(headNode==null) {	//链表为空
 			return nodeToInsert;
+		}
+		//可能出现参数为空的各种情况
+		if(nodeToInsert==null) {
+			return headNode;
 		}
 		int size=listLinkedListLength(headNode);
 		if(position>size+1||position<1) {
@@ -69,7 +73,7 @@ public class ListNodeUtil {
 	 * @param position
 	 * @return
 	 */
-	static ListNode deleteNodeFormLinkedList(ListNode headNode,int position) {
+	public static ListNode deleteNodeFormLinkedList(ListNode headNode,int position) {
 		int size=listLinkedListLength(headNode);
 		if(position>size||position<1) {
 			System.out.println("非法的位置插入链表数据。合法的输入为  1 到"+(size+1));
@@ -87,6 +91,10 @@ public class ListNodeUtil {
 				count++;
 			}
 			ListNode currentNode=previousNode.getNextNode();
+			if(currentNode==null) {
+				previousNode.setNextNode(null);
+				return headNode;
+			}
 			previousNode.setNextNode(currentNode.getNextNode());
 			currentNode=null;
 		}

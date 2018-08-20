@@ -45,7 +45,19 @@ public class CLLNodeTest {
 	public void testInsertAtEndInCLL() {
 		CLLNode newNode=new CLLNode();
 		newNode.setData(70);
-		CLLNodeUtil.insertAtEndInCLL(newNode, newNode);
-		CLLNodeUtil.printCircularListData(newNode);
+		newNode.setNext(newNode);
+		//CLLNodeUtil.insertAtEndInCLL(newNode, newNode);
+		head=CLLNodeUtil.insertAtEndInCLL(head, newNode);
+		CLLNodeUtil.printCircularListData(head);
+	}
+	
+	@Test
+	public void testInsertBegInCLL() {
+		CLLNode newNode=new CLLNode();
+		newNode.setData(70);
+		newNode.setNext(newNode);
+		//CLLNodeUtil.insertBegInCLL(newNode, newNode);
+		head=CLLNodeUtil.insertBegInCLL(head, newNode);
+		CLLNodeUtil.printCircularListData(head);
 	}
 }

@@ -32,13 +32,15 @@ public class CLLNodeUtil {
 	public static void printCircularListData(CLLNode headNode) {
 		CLLNode currentNode=headNode;
 		while(currentNode!=null) {
-			System.out.println(currentNode.getData()+"->");
+			if(headNode!=currentNode) {
+				System.out.println(currentNode.getData()+"->");
+			}
+			if(currentNode.getNext()==headNode) break; 
 			currentNode=currentNode.getNext();
-			if(currentNode==headNode) break; 
 		}
 		
 		if(currentNode!=null) {
-			System.out.println("("+currentNode.getData()+")headNode");
+			System.out.println("("+headNode.getData()+")headNode");
 		}
 	}
 	
@@ -51,8 +53,16 @@ public class CLLNodeUtil {
 	 * @return 返回头节点
 	 */
 	public static CLLNode insertAtEndInCLL(CLLNode headNode,CLLNode nodeToInsert) {
+		//判断是否为同一个节点,循环链表也不会出现这种情况，应该在初始化的时候就将头节点的下个节点设置成自己，所以在这里不许判断
+//		if(headNode==nodeToInsert) {
+//			return headNode;
+//		}
 		CLLNode currentNode=headNode;
 		while(currentNode!=null) {
+			//循环链表应该不会出现这种情况，以防这种情况出现，应该在初始化的时候就将头节点的下个节点设置成自己
+//			if(currentNode.getNext()==null) {
+//				break;
+//			}
 			currentNode=currentNode.getNext();
 			//TODO 这里时有问题的
 			if(currentNode.getNext()==headNode) break;
@@ -72,8 +82,16 @@ public class CLLNodeUtil {
 	 * @param nodeToInsert
 	 */
 	public static CLLNode insertBegInCLL(CLLNode headNode,CLLNode nodeToInsert) {
+		//判断是否为同一个节点,循环链表也不会出现这种情况，应该在初始化的时候就将头节点的下个节点设置成自己，所以在这里不许判断
+//		if(headNode==nodeToInsert) {
+//			return headNode;
+//		}
 		CLLNode currentNode=headNode;
 		while(currentNode!=null) {
+			//循环链表应该不会出现这种情况，以防这种情况出现，应该在初始化的时候就将头节点的下个节点设置成自己
+//			if(currentNode.getNext()==null) {
+//				break;
+//			}
 			currentNode=currentNode.getNext();
 			//TODO 这里时有问题的
 			if(currentNode.getNext()==headNode) break;
